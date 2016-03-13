@@ -168,6 +168,10 @@ enum CommandIDs {CONTROL_ID_FIRST = IDCANCEL + 1
 #define ERR_PARAM2_MUST_BE_BLANK _T("Parameter #2 must be blank in this case.")
 #define ERR_PARAM3_MUST_BE_BLANK _T("Parameter #3 must be blank in this case.")
 #define ERR_PARAM4_MUST_BE_BLANK _T("Parameter #4 must be blank in this case.")
+#define ERR_PARAM1_MUST_NOT_BE_BLANK _T("Parameter #1 must not be blank in this case.")
+#define ERR_PARAM2_MUST_NOT_BE_BLANK _T("Parameter #2 must not be blank in this case.")
+#define ERR_PARAM3_MUST_NOT_BE_BLANK _T("Parameter #3 must not be blank in this case.")
+#define ERR_PARAM4_MUST_NOT_BE_BLANK _T("Parameter #4 must not be blank in this case.")
 #define ERR_MISSING_OUTPUT_VAR _T("Requires at least one of its output variables.")
 #define ERR_MISSING_OPEN_PAREN _T("Missing \"(\"")
 #define ERR_MISSING_OPEN_BRACE _T("Missing \"{\"")
@@ -2093,7 +2097,14 @@ public:
 	const LabelPtr* operator-> () { return this; } // Act like a pointer.
 	operator void *() const { return mObject; } // For comparisons and boolean eval.
 
+	// Caller beware: does not check for NULL.
 	Label *ToLabel() const { return getType(mObject) == Callable_Label ? (Label *)mObject : NULL; }
+	// Caller beware: does not check for NULL.
+	Func *ToFunc() const { return getType(mObject) == Callable_Func ? (Func *)mObject : NULL; }
+	IObject *ToObject() const { return mObject; }
+	
+	// True if it is a dynamically-allocated object, not a Label or Func.
+	bool IsLiveObject() const { return mObject && getType(mObject) == Callable_Object; }
 	
 	// Helper methods for legacy code which deals with Labels.
 	bool IsExemptFromSuspend() const;
